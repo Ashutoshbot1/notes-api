@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createNote,
+  deleteNoteById,
   getAllNotes,
   getNoteById,
   updateNoteById,
@@ -17,5 +18,8 @@ router.post("/", createNote);
 
 // PUT
 router.patch("/:id", updateNoteById);
+
+// DELETE
+router.delete("/:id", deleteNoteById);
 
 export default router;

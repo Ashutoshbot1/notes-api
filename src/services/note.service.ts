@@ -5,6 +5,10 @@ export const findNoteById = (id: number) => {
   return notes.find((n) => n.id === id);
 };
 
+export const findNoteIndexById = (id: number) => {
+  return notes.findIndex((n) => n.id === id);
+};
+
 export const createNewNote = (title: string, content: string) => {
   const newNote: Note = {
     id: notes.length + 1,
@@ -35,4 +39,12 @@ export const updatedNote = (id: number, title?: string, content?: string) => {
   }
 
   return note;
+};
+
+export const deleteNote = (id: number) => {
+  const noteIndex = findNoteIndexById(id);
+  if (noteIndex === -1) {
+    return null;
+  }
+  return notes.splice(noteIndex, 1)[0];
 };
