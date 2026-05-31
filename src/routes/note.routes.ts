@@ -3,6 +3,7 @@ import {
   createNote,
   getAllNotes,
   getNoteById,
+  updateNoteById,
 } from "../controllers/note.controller.js";
 
 const router = Router();
@@ -13,5 +14,8 @@ router.get("/:id", getNoteById);
 
 // POST
 router.post("/", createNote);
+
+// PUT
+router.patch("/:id", updateNoteById);
 
 export default router;
