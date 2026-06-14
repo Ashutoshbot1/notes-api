@@ -58,9 +58,24 @@ export const validateUpdateNote = (
 
   if (!hasContent && !hasTitle) {
     return res.status(400).json({
-      error: "Title and content must be strings",
+      error: "At least one of title or content is required",
     });
   }
 
+  next();
+};
+
+export const validateNoteId = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const id: number = Number(req.params.id);
+
+  if (isNaN(id)) {
+    return res.status(400).json({
+      error: "Invalid note ID type",
+    });
+  }
   next();
 };

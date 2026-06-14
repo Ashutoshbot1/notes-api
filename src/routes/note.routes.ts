@@ -8,6 +8,7 @@ import {
 } from "../controllers/note.controller.js";
 import {
   validateCreateNote,
+  validateNoteId,
   validateUpdateNote,
 } from "../middlewares/validation.middleware.js";
 
@@ -15,15 +16,15 @@ const router = Router();
 
 // GET
 router.get("/", getAllNotes);
-router.get("/:id", getNoteById);
+router.get("/:id", validateNoteId, getNoteById);
 
 // POST
 router.post("/", validateCreateNote, createNote);
 
 // PUT
-router.patch("/:id", validateUpdateNote, updateNoteById);
+router.patch("/:id", validateNoteId, validateUpdateNote, updateNoteById);
 
 // DELETE
-router.delete("/:id", deleteNoteById);
+router.delete("/:id", validateNoteId, deleteNoteById);
 
 export default router;

@@ -25,10 +25,6 @@ export const getAllNotes = (_req: Request, res: Response) => {
 export const getNoteById = (req: Request, res: Response) => {
   const id = Number(req.params.id);
 
-  if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid note ID" });
-  }
-
   const note = findNoteById(id);
 
   if (!note) {
@@ -44,9 +40,6 @@ export const updateNoteById = (
 ) => {
   const id = Number(req.params.id);
   const { title, content } = req.body;
-  if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid note ID" });
-  }
 
   const note = updatedNote(id, title, content);
 
@@ -59,10 +52,6 @@ export const updateNoteById = (
 
 export const deleteNoteById = (req: Request, res: Response) => {
   const id = Number(req.params.id);
-
-  if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid note ID" });
-  }
 
   const notes = deleteNote(id);
   if (!notes) {
