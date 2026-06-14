@@ -6,7 +6,10 @@ import {
   getNoteById,
   updateNoteById,
 } from "../controllers/note.controller.js";
-import { validateCreateNote } from "../middlewares/validation.middleware.js";
+import {
+  validateCreateNote,
+  validateUpdateNote,
+} from "../middlewares/validation.middleware.js";
 
 const router = Router();
 
@@ -18,7 +21,7 @@ router.get("/:id", getNoteById);
 router.post("/", validateCreateNote, createNote);
 
 // PUT
-router.patch("/:id", updateNoteById);
+router.patch("/:id", validateUpdateNote, updateNoteById);
 
 // DELETE
 router.delete("/:id", deleteNoteById);

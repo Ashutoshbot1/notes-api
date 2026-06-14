@@ -48,12 +48,6 @@ export const updateNoteById = (
     return res.status(400).json({ error: "Invalid note ID" });
   }
 
-  if (!title?.trim() && !content?.trim()) {
-    return res
-      .status(400)
-      .json({ error: "At least one of title or content is required" });
-  }
-
   const note = updatedNote(id, title, content);
 
   if (!note) {

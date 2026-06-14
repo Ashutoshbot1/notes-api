@@ -9,7 +9,7 @@ export const validateCreateNote = (
 
   if (typeof title !== "string" || typeof content !== "string") {
     return res.status(400).json({
-      error: "Titla and Content must be string",
+      error: "Title and Content must be string",
     });
   }
 
@@ -18,5 +18,49 @@ export const validateCreateNote = (
       error: "Title and Content are required",
     });
   }
+  next();
+};
+
+export const validateUpdateNote = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { title, content } = req.body;
+  const hasTitle = title !== undefined;
+  const hasContent = content !== undefined;
+
+  if (hasTitle) {
+    if (typeof title !== "string") {
+      return res.status(400).json({
+        error: "Title must be string",
+      });
+    }
+    if (!title?.trim()) {
+      return res.status(400).json({
+        error: "Title should have valid value",
+      });
+    }
+  }
+
+  if (hasContent) {
+    if (typeof content !== "string") {
+      return res.status(400).json({
+        error: "Content must be string",
+      });
+    }
+    if (!content?.trim()) {
+      return res.status(400).json({
+        error: "Content should have valid value",
+      });
+    }
+  }
+
+  if (!hasContent && !hasTitle) {
+    return res.status(400).json({
+      error: "Title and content must be strings",
+    });
+  }
+
   next();
 };
