@@ -14,11 +14,6 @@ export const createNote = (
 ) => {
   const { title, content } = req.body;
 
-  //   Validations
-  if (!title?.trim() || !content?.trim()) {
-    return res.status(400).json({ error: "Title and content are required" });
-  }
-
   const newNote = createNewNote(title, content);
   res.status(201).json(newNote);
 };

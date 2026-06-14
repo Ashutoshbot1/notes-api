@@ -6,6 +6,7 @@ import {
   getNoteById,
   updateNoteById,
 } from "../controllers/note.controller.js";
+import { validateCreateNote } from "../middlewares/validation.middleware.js";
 
 const router = Router();
 
@@ -14,7 +15,7 @@ router.get("/", getAllNotes);
 router.get("/:id", getNoteById);
 
 // POST
-router.post("/", createNote);
+router.post("/", validateCreateNote, createNote);
 
 // PUT
 router.patch("/:id", updateNoteById);
