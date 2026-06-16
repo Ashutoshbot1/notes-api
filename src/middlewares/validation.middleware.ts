@@ -79,3 +79,36 @@ export const validateNoteId = (
   }
   next();
 };
+
+export const validate = (schema: any) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (schema.body) {
+      for (const [fieldName, rules] of Object.entries(schema.body) as [
+        string,
+        any,
+      ][]) {
+        const value = req.body[fieldName];
+
+        if (rules.required && value === undefined) {
+          return res.status(400).json({
+            error: `${fieldName} is required`,
+          });
+        }
+
+        if (rules.type && typeof value !== rules.type) {
+          return res.status(400).json({
+            error: `${fieldName} must be a ${rules.type}`,
+          });
+        }
+
+        if (rules.required && typeof value === "string" && !value.trim()) {
+          return res.status(400).json({
+            error: `${fieldName} is required`,
+          });
+        }
+      }
+    }
+
+    next();
+  };
+};
