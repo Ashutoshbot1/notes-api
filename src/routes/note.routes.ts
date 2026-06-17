@@ -10,7 +10,9 @@ import {
   validateCreateNote,
   validateNoteId,
   validateUpdateNote,
+  validateWithZod,
 } from "../middlewares/validation.middleware.js";
+import { createNoteSchema } from "../schemas/note.schema.js";
 
 const router = Router();
 
@@ -19,7 +21,7 @@ router.get("/", getAllNotes);
 router.get("/:id", validateNoteId, getNoteById);
 
 // POST
-router.post("/", validateCreateNote, createNote);
+router.post("/", validateWithZod(createNoteSchema), createNote);
 
 // PUT
 router.patch("/:id", validateNoteId, validateUpdateNote, updateNoteById);

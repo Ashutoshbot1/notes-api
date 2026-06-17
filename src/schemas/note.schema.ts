@@ -1,17 +1,4 @@
-// export const createNoteSchema = {
-//   body: {
-//     title: {
-//       required: true,
-//       type: "string",
-//     },
-//     content: {
-//       required: true,
-//       type: "string",
-//     },
-//   },
-// };
-
-import z from "zod";
+import { z } from "zod";
 
 export const createNoteSchema = z.object({
   body: z.object({
