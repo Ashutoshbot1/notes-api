@@ -6,17 +6,18 @@ import {
   getNoteById,
   updateNoteById,
 } from "../controllers/note.controller.js";
+import { validateWithZod } from "../middlewares/validation.middleware.js";
 import {
-  validateNoteId,
-  validateWithZod,
-} from "../middlewares/validation.middleware.js";
-import { createNoteSchema, updateNoteSchema } from "../schemas/note.schema.js";
+  createNoteSchema,
+  noteIdSchema,
+  updateNoteSchema,
+} from "../schemas/note.schema.js";
 
 const router = Router();
 
 // GET
 router.get("/", getAllNotes);
-router.get("/:id", validateNoteId, getNoteById);
+router.get("/:id", validateWithZod(noteIdSchema), getNoteById);
 
 // POST
 router.post("/", validateWithZod(createNoteSchema), createNote);
@@ -24,12 +25,12 @@ router.post("/", validateWithZod(createNoteSchema), createNote);
 // PUT
 router.patch(
   "/:id",
-  validateNoteId,
+  validateWithZod(noteIdSchema),
   validateWithZod(updateNoteSchema),
   updateNoteById,
 );
 
 // DELETE
-router.delete("/:id", validateNoteId, deleteNoteById);
+router.delete("/:id", validateWithZod(noteIdSchema), deleteNoteById);
 
 export default router;

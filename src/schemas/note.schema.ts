@@ -18,11 +18,8 @@ export const updateNoteSchema = z.object({
     }),
 });
 
-export const noteIdSchema = {
-  params: {
-    id: {
-      required: true,
-      type: "number",
-    },
-  },
-};
+export const noteIdSchema = z.object({
+  params: z.object({
+    id: z.coerce.number().int().positive(),
+  }),
+});
