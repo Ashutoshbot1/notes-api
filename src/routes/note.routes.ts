@@ -7,12 +7,10 @@ import {
   updateNoteById,
 } from "../controllers/note.controller.js";
 import {
-  validateCreateNote,
   validateNoteId,
-  validateUpdateNote,
   validateWithZod,
 } from "../middlewares/validation.middleware.js";
-import { createNoteSchema } from "../schemas/note.schema.js";
+import { createNoteSchema, updateNoteSchema } from "../schemas/note.schema.js";
 
 const router = Router();
 
@@ -24,7 +22,12 @@ router.get("/:id", validateNoteId, getNoteById);
 router.post("/", validateWithZod(createNoteSchema), createNote);
 
 // PUT
-router.patch("/:id", validateNoteId, validateUpdateNote, updateNoteById);
+router.patch(
+  "/:id",
+  validateNoteId,
+  validateWithZod(updateNoteSchema),
+  updateNoteById,
+);
 
 // DELETE
 router.delete("/:id", validateNoteId, deleteNoteById);

@@ -7,18 +7,16 @@ export const createNoteSchema = z.object({
   }),
 });
 
-export const updateNoteSchema = {
-  body: {
-    title: {
-      required: false,
-      type: "string",
-    },
-    content: {
-      required: false,
-      type: "string",
-    },
-  },
-};
+export const updateNoteSchema = z.object({
+  body: z
+    .object({
+      title: z.string().trim().min(1).optional(),
+      content: z.string().trim().min(1).optional(),
+    })
+    .refine((data) => data.title !== undefined || data.content !== undefined, {
+      message: "At least one of title or content is required",
+    }),
+});
 
 export const noteIdSchema = {
   params: {
