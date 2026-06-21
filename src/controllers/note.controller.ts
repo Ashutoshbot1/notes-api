@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import { notes } from "../data/notes.data.js";
 import type { CreateNoteBody, UpdateNoteBody } from "../types/note.types.js";
 import {
   createNewNote,
   deleteNote,
   findNoteById,
   updatedNote,
+  getAllNotes as getAllNotesService,
 } from "../services/note.service.js";
 import { NotFoundError } from "../errors/not-found.error.js";
 
@@ -20,6 +20,7 @@ export const createNote = (
 };
 
 export const getAllNotes = (_req: Request, res: Response) => {
+  const notes = getAllNotesService();
   res.status(200).json(notes);
 };
 

@@ -1,50 +1,27 @@
-import { notes } from "../data/notes.data.js";
-import { Note, UpdateNoteBody } from "../types/note.types.js";
+import {
+  createNote as createNoteInRepository,
+  deleteNoteById,
+  findAllNotes,
+  findNoteById as findNoteByIdFromRepository,
+  updateNoteById,
+} from "../repositories/note.repository.js";
 
 export const findNoteById = (id: number) => {
-  return notes.find((n) => n.id === id);
-};
-
-export const findNoteIndexById = (id: number) => {
-  return notes.findIndex((n) => n.id === id);
+  return findNoteByIdFromRepository(id);
 };
 
 export const createNewNote = (title: string, content: string) => {
-  const newNote: Note = {
-    id: notes.length + 1,
-    title,
-    content,
-  };
-  notes.push(newNote);
-  return newNote;
+  return createNoteInRepository({ title, content });
 };
 
 export const getAllNotes = () => {
-  return notes;
+  return findAllNotes();
 };
 
 export const updatedNote = (id: number, title?: string, content?: string) => {
-  const note = findNoteById(id);
-
-  if (!note) {
-    return null;
-  }
-
-  if (title?.trim()) {
-    note.title = title;
-  }
-
-  if (content?.trim()) {
-    note.content = content;
-  }
-
-  return note;
+  return updateNoteById(id, { title, content });
 };
 
 export const deleteNote = (id: number) => {
-  const noteIndex = findNoteIndexById(id);
-  if (noteIndex === -1) {
-    return null;
-  }
-  return notes.splice(noteIndex, 1)[0];
+  return deleteNoteById(id);
 };
