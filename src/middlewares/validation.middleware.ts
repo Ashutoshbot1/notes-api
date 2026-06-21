@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { AppError } from "../errors/app.error.js";
+import { BadRequestError } from "../errors/bad-request.error.js";
 
 export const validateWithZod = (schema: any) => {
   return (req: Request, _res: Response, next: NextFunction) => {
@@ -15,7 +15,7 @@ export const validateWithZod = (schema: any) => {
         message: issue.message,
       }));
 
-      throw new AppError("Validation failed", 400, errors);
+      throw new BadRequestError("Validation failed", errors);
     }
 
     if (result.data.body) {
