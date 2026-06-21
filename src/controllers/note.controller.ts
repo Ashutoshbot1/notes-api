@@ -7,6 +7,7 @@ import {
   findNoteById,
   updatedNote,
 } from "../services/note.service.js";
+import { AppError } from "../errors/app.error.js";
 
 export const createNote = (
   req: Request<any, any, CreateNoteBody>,
@@ -28,7 +29,7 @@ export const getNoteById = (req: Request, res: Response) => {
   const note = findNoteById(id);
 
   if (!note) {
-    return res.status(404).json({ error: "Note not found" });
+    throw new AppError("Note not found", 404);
   }
 
   res.status(200).json(note);
@@ -44,7 +45,7 @@ export const updateNoteById = (
   const note = updatedNote(id, title, content);
 
   if (!note) {
-    return res.status(404).json({ error: "Note not found" });
+    throw new AppError("Note not found", 404);
   }
 
   return res.status(200).json(note);
@@ -55,7 +56,7 @@ export const deleteNoteById = (req: Request, res: Response) => {
 
   const notes = deleteNote(id);
   if (!notes) {
-    return res.status(404).json({ error: "Note not found" });
+    throw new AppError("Note not found", 404);
   }
 
   return res
