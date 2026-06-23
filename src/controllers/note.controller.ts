@@ -19,8 +19,8 @@ export const createNote = (
   res.status(201).json(newNote);
 };
 
-export const getAllNotes = (_req: Request, res: Response) => {
-  const notes = getAllNotesService();
+export const getAllNotes = async (_req: Request, res: Response) => {
+  const notes = await getAllNotesService();
   res.status(200).json(notes);
 };
 

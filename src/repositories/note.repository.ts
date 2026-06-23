@@ -1,8 +1,14 @@
+import { pool } from "../config/db.js";
 import { notes } from "../data/notes.data.js";
-import type { CreateNoteBody, Note, UpdateNoteBody } from "../types/note.types.js";
+import type {
+  CreateNoteBody,
+  Note,
+  UpdateNoteBody,
+} from "../types/note.types.js";
 
-export const findAllNotes = () => {
-  return notes;
+export const findAllNotes = async () => {
+  const result = await pool.query("SELECT * FROM notes ORDER BY id ASC");
+  return result.rows;
 };
 
 export const findNoteById = (id: number) => {

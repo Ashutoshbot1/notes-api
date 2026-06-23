@@ -14,7 +14,7 @@ export const createNewNote = (title: string, content: string) => {
   return createNoteInRepository({ title, content });
 };
 
-export const getAllNotes = () => {
+export const getAllNotes = async () => {
   return findAllNotes();
 };
 
