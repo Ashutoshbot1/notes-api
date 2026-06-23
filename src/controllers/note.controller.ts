@@ -24,10 +24,10 @@ export const getAllNotes = async (_req: Request, res: Response) => {
   res.status(200).json(notes);
 };
 
-export const getNoteById = (req: Request, res: Response) => {
+export const getNoteById = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
 
-  const note = findNoteById(id);
+  const note = await findNoteById(id);
 
   if (!note) {
     throw new NotFoundError("Note not found");

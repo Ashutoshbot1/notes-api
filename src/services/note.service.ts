@@ -6,8 +6,9 @@ import {
   updateNoteById,
 } from "../repositories/note.repository.js";
 
-export const findNoteById = (id: number) => {
-  return findNoteByIdFromRepository(id);
+export const findNoteById = async (id: number) => {
+  const result = await findNoteByIdFromRepository(id);
+  return result;
 };
 
 export const createNewNote = async (title: string, content: string) => {

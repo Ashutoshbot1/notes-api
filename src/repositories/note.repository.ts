@@ -11,8 +11,9 @@ export const findAllNotes = async () => {
   return result.rows;
 };
 
-export const findNoteById = (id: number) => {
-  return notes.find((note) => note.id === id);
+export const findNoteById = async (id: number) => {
+  const result = await pool.query("SELECT * FROM notes WHERE id=$1", [id]);
+  return result.rows[0];
 };
 
 export const createNote = async (data: CreateNoteBody) => {
@@ -24,8 +25,8 @@ export const createNote = async (data: CreateNoteBody) => {
   return result.rows[0];
 };
 
-export const updateNoteById = (id: number, data: UpdateNoteBody) => {
-  const note = findNoteById(id);
+export const updateNoteById = async (id: number, data: UpdateNoteBody) => {
+  const note = await findNoteById(id);
 
   if (!note) {
     return null;
