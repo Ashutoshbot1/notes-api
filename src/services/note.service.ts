@@ -10,8 +10,9 @@ export const findNoteById = (id: number) => {
   return findNoteByIdFromRepository(id);
 };
 
-export const createNewNote = (title: string, content: string) => {
-  return createNoteInRepository({ title, content });
+export const createNewNote = async (title: string, content: string) => {
+  const result = await createNoteInRepository({ title, content });
+  return result;
 };
 
 export const getAllNotes = async () => {

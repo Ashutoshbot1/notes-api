@@ -15,15 +15,13 @@ export const findNoteById = (id: number) => {
   return notes.find((note) => note.id === id);
 };
 
-export const createNote = (data: CreateNoteBody) => {
-  const newNote: Note = {
-    id: notes.length + 1,
-    title: data.title,
-    content: data.content,
-  };
+export const createNote = async (data: CreateNoteBody) => {
+  const result = await pool.query(
+    "INSERT INTO notes (title, content) VALUES ($1, $2) RETURNING *",
+    [data.title, data.content],
+  );
 
-  notes.push(newNote);
-  return newNote;
+  return result.rows[0];
 };
 
 export const updateNoteById = (id: number, data: UpdateNoteBody) => {

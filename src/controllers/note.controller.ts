@@ -9,13 +9,13 @@ import {
 } from "../services/note.service.js";
 import { NotFoundError } from "../errors/not-found.error.js";
 
-export const createNote = (
+export const createNote = async (
   req: Request<any, any, CreateNoteBody>,
   res: Response,
 ) => {
   const { title, content } = req.body;
 
-  const newNote = createNewNote(title, content);
+  const newNote = await createNewNote(title, content);
   res.status(201).json(newNote);
 };
 
