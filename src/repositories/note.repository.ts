@@ -1,10 +1,5 @@
 import { pool } from "../config/db.js";
-import { notes } from "../data/notes.data.js";
-import type {
-  CreateNoteBody,
-  Note,
-  UpdateNoteBody,
-} from "../types/note.types.js";
+import type { CreateNoteBody, UpdateNoteBody } from "../types/note.types.js";
 
 export const findAllNotes = async () => {
   const result = await pool.query("SELECT * FROM notes ORDER BY id ASC");
@@ -26,29 +21,17 @@ export const createNote = async (data: CreateNoteBody) => {
 };
 
 export const updateNoteById = async (id: number, data: UpdateNoteBody) => {
-  const note = await findNoteById(id);
+  const result = await pool.query(
+    "UPDATE notes SET title=COALESCE($1, title ), content=COALESCE($2, content), updated_at=CURRENT_TIMESTAMP where id=$3 RETURNING *",
+    [data.title, data.content, id],
+  );
 
-  if (!note) {
-    return null;
-  }
-
-  if (data.title?.trim()) {
-    note.title = data.title;
-  }
-
-  if (data.content?.trim()) {
-    note.content = data.content;
-  }
-
-  return note;
+  return result.rows[0] ?? null;
 };
 
-export const deleteNoteById = (id: number) => {
-  const noteIndex = notes.findIndex((note) => note.id === id);
-
-  if (noteIndex === -1) {
-    return null;
-  }
-
-  return notes.splice(noteIndex, 1)[0];
+export const deleteNoteById = async (id: number) => {
+  const result = await pool.query("DELETE FROM notes WHERE id=$1 RETURNING *", [
+    id,
+  ]);
+  return result.rows[0] ?? null;
 };

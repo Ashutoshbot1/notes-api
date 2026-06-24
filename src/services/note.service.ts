@@ -20,10 +20,16 @@ export const getAllNotes = async () => {
   return findAllNotes();
 };
 
-export const updatedNote = (id: number, title?: string, content?: string) => {
-  return updateNoteById(id, { title, content });
+export const updatedNote = async (
+  id: number,
+  title?: string,
+  content?: string,
+) => {
+  const result = await updateNoteById(id, { title, content });
+  return result;
 };
 
-export const deleteNote = (id: number) => {
-  return deleteNoteById(id);
+export const deleteNote = async (id: number) => {
+  const result = await deleteNoteById(id);
+  return result;
 };

@@ -36,14 +36,14 @@ export const getNoteById = async (req: Request, res: Response) => {
   res.status(200).json(note);
 };
 
-export const updateNoteById = (
+export const updateNoteById = async (
   req: Request<any, any, UpdateNoteBody>,
   res: Response,
 ) => {
   const id = Number(req.params.id);
   const { title, content } = req.body;
 
-  const note = updatedNote(id, title, content);
+  const note = await updatedNote(id, title, content);
 
   if (!note) {
     throw new NotFoundError("Note not found");
@@ -52,10 +52,10 @@ export const updateNoteById = (
   return res.status(200).json(note);
 };
 
-export const deleteNoteById = (req: Request, res: Response) => {
+export const deleteNoteById = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
 
-  const notes = deleteNote(id);
+  const notes = await deleteNote(id);
   if (!notes) {
     throw new NotFoundError("Note not found");
   }
