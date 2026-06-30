@@ -5,18 +5,22 @@ import {
   findNoteById as findNoteByIdFromRepository,
   updateNoteById,
 } from "../repositories/note.repository.js";
+import type { Note } from "../types/note.types.js";
 
-export const findNoteById = async (id: number) => {
+export const findNoteById = async (id: number): Promise<Note | null> => {
   const result = await findNoteByIdFromRepository(id);
   return result;
 };
 
-export const createNewNote = async (title: string, content: string) => {
+export const createNewNote = async (
+  title: string,
+  content: string,
+): Promise<Note> => {
   const result = await createNoteInRepository({ title, content });
   return result;
 };
 
-export const getAllNotes = async () => {
+export const getAllNotes = async (): Promise<Note[]> => {
   return findAllNotes();
 };
 
@@ -24,12 +28,12 @@ export const updatedNote = async (
   id: number,
   title?: string,
   content?: string,
-) => {
+): Promise<Note | null> => {
   const result = await updateNoteById(id, { title, content });
   return result;
 };
 
-export const deleteNote = async (id: number) => {
+export const deleteNote = async (id: number): Promise<Note | null> => {
   const result = await deleteNoteById(id);
   return result;
 };

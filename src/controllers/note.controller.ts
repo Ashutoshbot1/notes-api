@@ -8,23 +8,30 @@ import {
   getAllNotes as getAllNotesService,
 } from "../services/note.service.js";
 import { NotFoundError } from "../errors/not-found.error.js";
+import { sendSuccessResponse } from "../utils/response.js";
 
 export const createNote = async (
   req: Request<any, any, CreateNoteBody>,
   res: Response,
-) => {
+): Promise<void> => {
   const { title, content } = req.body;
 
   const newNote = await createNewNote(title, content);
-  res.status(201).json(newNote);
+  sendSuccessResponse(res, 201, "Note created successfully", newNote);
 };
 
-export const getAllNotes = async (_req: Request, res: Response) => {
+export const getAllNotes = async (
+  _req: Request,
+  res: Response,
+): Promise<void> => {
   const notes = await getAllNotesService();
-  res.status(200).json(notes);
+  sendSuccessResponse(res, 200, "Notes fetched successfully", notes);
 };
 
-export const getNoteById = async (req: Request, res: Response) => {
+export const getNoteById = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const id = Number(req.params.id);
 
   const note = await findNoteById(id);
@@ -33,13 +40,13 @@ export const getNoteById = async (req: Request, res: Response) => {
     throw new NotFoundError("Note not found");
   }
 
-  res.status(200).json(note);
+  sendSuccessResponse(res, 200, "Note fetched successfully", note);
 };
 
 export const updateNoteById = async (
   req: Request<any, any, UpdateNoteBody>,
   res: Response,
-) => {
+): Promise<void> => {
   const id = Number(req.params.id);
   const { title, content } = req.body;
 
@@ -49,18 +56,19 @@ export const updateNoteById = async (
     throw new NotFoundError("Note not found");
   }
 
-  return res.status(200).json(note);
+  sendSuccessResponse(res, 200, "Note updated successfully", note);
 };
 
-export const deleteNoteById = async (req: Request, res: Response) => {
+export const deleteNoteById = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const id = Number(req.params.id);
 
-  const notes = await deleteNote(id);
-  if (!notes) {
+  const note = await deleteNote(id);
+  if (!note) {
     throw new NotFoundError("Note not found");
   }
 
-  return res
-    .status(200)
-    .json({ message: "Note deleted successfully", data: notes });
+  sendSuccessResponse(res, 200, "Note deleted successfully", note);
 };
