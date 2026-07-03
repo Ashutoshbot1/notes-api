@@ -20,3 +20,8 @@ export interface GetNotesQuery {
   page: number;
   limit: number;
 }
+
+export interface PaginatedNotesResult {
+  items: Note[];
+  totalItems: number;
+}
