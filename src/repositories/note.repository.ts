@@ -5,8 +5,15 @@ import type {
   UpdateNoteBody,
 } from "../types/note.types.js";
 
-export const findAllNotes = async (): Promise<Note[]> => {
-  const result = await pool.query<Note>("SELECT * FROM notes ORDER BY id ASC");
+export const findAllNotes = async (
+  page: number,
+  limit: number,
+): Promise<Note[]> => {
+  const offset = (page - 1) * limit;
+  const result = await pool.query<Note>(
+    "SELECT * FROM notes ORDER BY id ASC LIMIT $1 OFFSET $2",
+    [limit, offset],
+  );
   return result.rows;
 };
 

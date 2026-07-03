@@ -15,3 +15,8 @@ export interface UpdateNoteBody {
   title?: string;
   content?: string;
 }
+
+export interface GetNotesQuery {
+  page: number;
+  limit: number;
+}

@@ -1,5 +1,9 @@
 import type { Request, Response } from "express";
-import type { CreateNoteBody, UpdateNoteBody } from "../types/note.types.js";
+import type {
+  CreateNoteBody,
+  GetNotesQuery,
+  UpdateNoteBody,
+} from "../types/note.types.js";
 import {
   createNewNote,
   deleteNote,
@@ -21,10 +25,11 @@ export const createNote = async (
 };
 
 export const getAllNotes = async (
-  _req: Request,
+  req: Request<any, any, any, GetNotesQuery>,
   res: Response,
 ): Promise<void> => {
-  const notes = await getAllNotesService();
+  const { page, limit } = req.query;
+  const notes = await getAllNotesService(page, limit);
   sendSuccessResponse(res, 200, "Notes fetched successfully", notes);
 };
 

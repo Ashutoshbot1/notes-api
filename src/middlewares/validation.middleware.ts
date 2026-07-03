@@ -1,8 +1,10 @@
-import type { Request, Response, NextFunction } from "express";
+import type { RequestHandler } from "express";
 import { BadRequestError } from "../errors/bad-request.error.js";
 
-export const validateWithZod = (schema: any) => {
-  return (req: Request, _res: Response, next: NextFunction) => {
+export const validateWithZod = (
+  schema: any,
+): RequestHandler<any, any, any, any> => {
+  return (req, _res, next) => {
     const result = schema.safeParse({
       body: req.body,
       params: req.params,

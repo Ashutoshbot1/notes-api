@@ -13,11 +13,16 @@ import {
   noteIdSchema,
   updateNoteSchema,
 } from "../schemas/note.schema.js";
+import type { GetNotesQuery } from "../types/note.types.js";
 
 const router = Router();
 
 // GET
-router.get("/", validateWithZod(getNotesQuerySchema), getAllNotes);
+router.get<any, any, any, GetNotesQuery>(
+  "/",
+  validateWithZod(getNotesQuerySchema),
+  getAllNotes,
+);
 router.get("/:id", validateWithZod(noteIdSchema), getNoteById);
 
 // POST

@@ -20,8 +20,11 @@ export const createNewNote = async (
   return result;
 };
 
-export const getAllNotes = async (): Promise<Note[]> => {
-  return findAllNotes();
+export const getAllNotes = async (
+  page: number,
+  limit: number,
+): Promise<Note[]> => {
+  return findAllNotes(page, limit);
 };
 
 export const updatedNote = async (
