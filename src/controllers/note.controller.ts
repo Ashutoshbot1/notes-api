@@ -25,10 +25,10 @@ export const createNote = async (
 };
 
 export const getAllNotes = async (
-  req: Request<any, any, any, GetNotesQuery>,
+  _req: Request,
   res: Response,
 ): Promise<void> => {
-  const { page, limit } = req.query;
+  const { page, limit } = res.locals.validatedQuery as GetNotesQuery;
   const notes = await getAllNotesService(page, limit);
   sendSuccessResponse(res, 200, "Notes fetched successfully", notes);
 };

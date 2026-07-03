@@ -4,7 +4,7 @@ import { BadRequestError } from "../errors/bad-request.error.js";
 export const validateWithZod = (
   schema: any,
 ): RequestHandler<any, any, any, any> => {
-  return (req, _res, next) => {
+  return (req, res, next) => {
     const result = schema.safeParse({
       body: req.body,
       params: req.params,
@@ -28,7 +28,7 @@ export const validateWithZod = (
     }
 
     if (result.data.query) {
-      req.query = result.data.query;
+      res.locals.validatedQuery = result.data.query;
     }
 
     next();
