@@ -9,6 +9,7 @@ import {
 import { validateWithZod } from "../middlewares/validation.middleware.js";
 import {
   createNoteSchema,
+  getNotesQuerySchema,
   noteIdSchema,
   updateNoteSchema,
 } from "../schemas/note.schema.js";
@@ -16,7 +17,7 @@ import {
 const router = Router();
 
 // GET
-router.get("/", getAllNotes);
+router.get("/", validateWithZod(getNotesQuerySchema), getAllNotes);
 router.get("/:id", validateWithZod(noteIdSchema), getNoteById);
 
 // POST
