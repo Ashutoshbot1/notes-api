@@ -1,30 +1,57 @@
 import { pool } from "../config/db.js";
-import {
-  type Note,
-  type CreateNoteBody,
-  type UpdateNoteBody,
+import type {
   CountResult,
+  CreateNoteBody,
+  Note,
   PaginatedNotesResult,
+  UpdateNoteBody,
 } from "../types/note.types.js";
 
 export const findAllNotes = async (
   page: number,
   limit: number,
+  search?: string,
 ): Promise<PaginatedNotesResult> => {
   const offset = (page - 1) * limit;
+
+  if (search) {
+    const searchPattern = `%${search}%`;
+
+    const result = await pool.query<Note>(
+      `SELECT * FROM notes
+     WHERE title ILIKE $1 OR content ILIKE $1
+     ORDER BY id ASC
+     LIMIT $2 OFFSET $3`,
+      [searchPattern, limit, offset],
+    );
+
+    const countResult = await pool.query<CountResult>(
+      `SELECT COUNT(*) FROM notes
+     WHERE title ILIKE $1 OR content ILIKE $1`,
+      [searchPattern],
+    );
+
+    return {
+      items: result.rows,
+      totalItems: Number(countResult.rows[0].count),
+    };
+  }
+
   const result = await pool.query<Note>(
-    "SELECT * FROM notes ORDER BY id ASC LIMIT $1 OFFSET $2",
+    `SELECT * FROM notes
+   ORDER BY id ASC
+   LIMIT $1 OFFSET $2`,
     [limit, offset],
   );
+
   const countResult = await pool.query<CountResult>(
     "SELECT COUNT(*) FROM notes",
   );
-  const totalItems = Number(countResult.rows[0].count);
-  const paginatedResult: PaginatedNotesResult = {
+
+  return {
     items: result.rows,
-    totalItems,
+    totalItems: Number(countResult.rows[0].count),
   };
-  return paginatedResult;
 };
 
 export const findNoteById = async (id: number): Promise<Note | null> => {

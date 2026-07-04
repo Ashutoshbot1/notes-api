@@ -24,10 +24,12 @@ export const createNewNote = async (
 export const getAllNotes = async (
   page: number,
   limit: number,
+  search?: string,
 ): Promise<PaginatedResponse<Note>> => {
   const { items, totalItems }: PaginatedNotesResult = await findAllNotes(
     page,
     limit,
+    search,
   );
   const totalPages = Math.ceil(totalItems / limit);
   const hasNextPage = page < totalPages;

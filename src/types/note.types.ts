@@ -19,6 +19,7 @@ export interface UpdateNoteBody {
 export interface GetNotesQuery {
   page: number;
   limit: number;
+  search?: string;
 }
 
 export interface PaginatedNotesResult {
