@@ -3,6 +3,8 @@ import type {
   CountResult,
   CreateNoteBody,
   Note,
+  NoteOrder,
+  NoteSortBy,
   PaginatedNotesResult,
   UpdateNoteBody,
 } from "../types/note.types.js";
@@ -10,6 +12,8 @@ import type {
 export const findAllNotes = async (
   page: number,
   limit: number,
+  sortBy: NoteSortBy,
+  order: NoteOrder,
   search?: string,
 ): Promise<PaginatedNotesResult> => {
   const offset = (page - 1) * limit;
@@ -20,7 +24,7 @@ export const findAllNotes = async (
     const result = await pool.query<Note>(
       `SELECT * FROM notes
      WHERE title ILIKE $1 OR content ILIKE $1
-     ORDER BY id ASC
+     ORDER BY ${sortBy} ${order}
      LIMIT $2 OFFSET $3`,
       [searchPattern, limit, offset],
     );
@@ -39,7 +43,7 @@ export const findAllNotes = async (
 
   const result = await pool.query<Note>(
     `SELECT * FROM notes
-   ORDER BY id ASC
+   ORDER BY ${sortBy} ${order}
    LIMIT $1 OFFSET $2`,
     [limit, offset],
   );

@@ -28,8 +28,9 @@ export const getAllNotes = async (
   _req: Request,
   res: Response,
 ): Promise<void> => {
-  const { page, limit, search } = res.locals.validatedQuery as GetNotesQuery;
-  const notes = await getAllNotesService(page, limit, search);
+  const { page, limit, search, sortBy, order } = res.locals
+    .validatedQuery as GetNotesQuery;
+  const notes = await getAllNotesService(page, limit, sortBy, order, search);
   sendSuccessResponse(res, 200, "Notes fetched successfully", notes);
 };
 
