@@ -2,20 +2,19 @@ import { pool } from "../config/db.js";
 import type {
   CountResult,
   CreateNoteBody,
+  GetNotesQuery,
   Note,
-  NoteOrder,
-  NoteSortBy,
   PaginatedNotesResult,
   UpdateNoteBody,
 } from "../types/note.types.js";
 
-export const findAllNotes = async (
-  page: number,
-  limit: number,
-  sortBy: NoteSortBy,
-  order: NoteOrder,
-  search?: string,
-): Promise<PaginatedNotesResult> => {
+export const findAllNotes = async ({
+  page,
+  limit,
+  sortBy,
+  order,
+  search,
+}: GetNotesQuery): Promise<PaginatedNotesResult> => {
   const offset = (page - 1) * limit;
 
   if (search) {

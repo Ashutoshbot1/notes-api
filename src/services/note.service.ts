@@ -6,9 +6,8 @@ import {
   updateNoteById,
 } from "../repositories/note.repository.js";
 import type {
+  GetNotesQuery,
   Note,
-  NoteOrder,
-  NoteSortBy,
   PaginatedNotesResult,
 } from "../types/note.types.js";
 import type { PaginatedResponse } from "../types/pagination.types.js";
@@ -26,20 +25,20 @@ export const createNewNote = async (
   return result;
 };
 
-export const getAllNotes = async (
-  page: number,
-  limit: number,
-  sortBy: NoteSortBy,
-  order: NoteOrder,
-  search?: string,
-): Promise<PaginatedResponse<Note>> => {
-  const { items, totalItems }: PaginatedNotesResult = await findAllNotes(
+export const getAllNotes = async ({
+  page,
+  limit,
+  sortBy,
+  order,
+  search,
+}: GetNotesQuery): Promise<PaginatedResponse<Note>> => {
+  const { items, totalItems }: PaginatedNotesResult = await findAllNotes({
     page,
     limit,
     sortBy,
     order,
     search,
-  );
+  });
   const totalPages = Math.ceil(totalItems / limit);
   const hasNextPage = page < totalPages;
   const hasPreviousPage = page > 1;
