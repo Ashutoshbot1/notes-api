@@ -25,3 +25,7 @@ export interface PaginatedNotesResult {
   items: Note[];
   totalItems: number;
 }
+
+export interface CountResult {
+  count: string;
+}

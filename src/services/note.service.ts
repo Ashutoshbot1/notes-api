@@ -5,7 +5,7 @@ import {
   findNoteById as findNoteByIdFromRepository,
   updateNoteById,
 } from "../repositories/note.repository.js";
-import type { Note } from "../types/note.types.js";
+import type { Note, PaginatedNotesResult } from "../types/note.types.js";
 
 export const findNoteById = async (id: number): Promise<Note | null> => {
   const result = await findNoteByIdFromRepository(id);
@@ -23,7 +23,7 @@ export const createNewNote = async (
 export const getAllNotes = async (
   page: number,
   limit: number,
-): Promise<Note[]> => {
+): Promise<PaginatedNotesResult> => {
   return findAllNotes(page, limit);
 };
 

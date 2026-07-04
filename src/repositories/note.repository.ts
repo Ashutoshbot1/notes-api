@@ -1,20 +1,30 @@
 import { pool } from "../config/db.js";
-import type {
-  Note,
-  CreateNoteBody,
-  UpdateNoteBody,
+import {
+  type Note,
+  type CreateNoteBody,
+  type UpdateNoteBody,
+  CountResult,
+  PaginatedNotesResult,
 } from "../types/note.types.js";
 
 export const findAllNotes = async (
   page: number,
   limit: number,
-): Promise<Note[]> => {
+): Promise<PaginatedNotesResult> => {
   const offset = (page - 1) * limit;
   const result = await pool.query<Note>(
     "SELECT * FROM notes ORDER BY id ASC LIMIT $1 OFFSET $2",
     [limit, offset],
   );
-  return result.rows;
+  const countResult = await pool.query<CountResult>(
+    "SELECT COUNT(*) FROM notes",
+  );
+  const totalItems = Number(countResult.rows[0].count);
+  const paginatedResult: PaginatedNotesResult = {
+    items: result.rows,
+    totalItems,
+  };
+  return paginatedResult;
 };
 
 export const findNoteById = async (id: number): Promise<Note | null> => {
