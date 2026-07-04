@@ -1,3 +1,6 @@
+export type NoteSortBy = "id" | "created_at" | "updated_at" | "title";
+export type NoteOrder = "asc" | "desc";
+
 export interface CreateNoteBody {
   title: string;
   content: string;
@@ -19,6 +22,8 @@ export interface UpdateNoteBody {
 export interface GetNotesQuery {
   page: number;
   limit: number;
+  sortBy: NoteSortBy;
+  order: NoteOrder;
   search?: string;
 }
 
