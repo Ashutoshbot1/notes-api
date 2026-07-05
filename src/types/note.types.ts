@@ -6,12 +6,19 @@ export interface CreateNoteBody {
   content: string;
 }
 
+export interface CreateNoteData {
+  title: string;
+  content: string;
+  userId: number;
+}
+
 export interface Note {
   id: number;
   title: string;
   content: string;
   created_at: string;
   updated_at: string;
+  user_id: number;
 }
 
 export interface UpdateNoteBody {

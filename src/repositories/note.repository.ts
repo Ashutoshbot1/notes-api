@@ -2,6 +2,7 @@ import { pool } from "../config/db.js";
 import type {
   CountResult,
   CreateNoteBody,
+  CreateNoteData,
   GetNotesQuery,
   Note,
   PaginatedNotesResult,
@@ -64,10 +65,10 @@ export const findNoteById = async (id: number): Promise<Note | null> => {
   return result.rows[0] ?? null;
 };
 
-export const createNote = async (data: CreateNoteBody): Promise<Note> => {
+export const createNote = async (data: CreateNoteData): Promise<Note> => {
   const result = await pool.query<Note>(
-    "INSERT INTO notes (title, content) VALUES ($1, $2) RETURNING *",
-    [data.title, data.content],
+    "INSERT INTO notes (title, content, user_id) VALUES ($1, $2, $3) RETURNING *",
+    [data.title, data.content, data.userId],
   );
 
   return result.rows[0];

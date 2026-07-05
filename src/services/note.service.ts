@@ -17,11 +17,16 @@ export const findNoteById = async (id: number): Promise<Note | null> => {
   return result;
 };
 
+const DEFAULT_USER_ID = 1;
 export const createNewNote = async (
   title: string,
   content: string,
 ): Promise<Note> => {
-  const result = await createNoteInRepository({ title, content });
+  const result = await createNoteInRepository({
+    title,
+    content,
+    userId: DEFAULT_USER_ID,
+  });
   return result;
 };
 
