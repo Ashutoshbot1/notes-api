@@ -79,19 +79,23 @@ export const createNote = async (data: CreateNoteData): Promise<Note> => {
 export const updateNoteById = async (
   id: number,
   data: UpdateNoteBody,
+  userId: number,
 ): Promise<Note | null> => {
   const result = await pool.query<Note>(
-    "UPDATE notes SET title=COALESCE($1, title ), content=COALESCE($2, content), updated_at=CURRENT_TIMESTAMP where id=$3 RETURNING *",
-    [data.title, data.content, id],
+    "UPDATE notes SET title=COALESCE($1, title ), content=COALESCE($2, content), updated_at=CURRENT_TIMESTAMP where id=$3 AND user_id=$4 RETURNING *",
+    [data.title, data.content, id, userId],
   );
 
   return result.rows[0] ?? null;
 };
 
-export const deleteNoteById = async (id: number): Promise<Note | null> => {
+export const deleteNoteById = async (
+  id: number,
+  userId: number,
+): Promise<Note | null> => {
   const result = await pool.query<Note>(
-    "DELETE FROM notes WHERE id=$1 RETURNING *",
-    [id],
+    "DELETE FROM notes WHERE id=$1 AND user_id=$2 RETURNING *",
+    [id, userId],
   );
   return result.rows[0] ?? null;
 };

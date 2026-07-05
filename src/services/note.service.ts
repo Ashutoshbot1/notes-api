@@ -71,11 +71,11 @@ export const updatedNote = async (
   title?: string,
   content?: string,
 ): Promise<Note | null> => {
-  const result = await updateNoteById(id, { title, content });
+  const result = await updateNoteById(id, { title, content }, DEFAULT_USER_ID);
   return result;
 };
 
 export const deleteNote = async (id: number): Promise<Note | null> => {
-  const result = await deleteNoteById(id);
+  const result = await deleteNoteById(id, DEFAULT_USER_ID);
   return result;
 };
