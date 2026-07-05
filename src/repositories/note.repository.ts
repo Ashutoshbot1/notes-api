@@ -1,7 +1,6 @@
 import { pool } from "../config/db.js";
 import type {
   CountResult,
-  CreateNoteBody,
   CreateNoteData,
   GetNotesQuery,
   Note,
@@ -9,13 +8,10 @@ import type {
   UpdateNoteBody,
 } from "../types/note.types.js";
 
-export const findAllNotes = async ({
-  page,
-  limit,
-  sortBy,
-  order,
-  search,
-}: GetNotesQuery): Promise<PaginatedNotesResult> => {
+export const findAllNotes = async (
+  { page, limit, sortBy, order, search }: GetNotesQuery,
+  userId: number,
+): Promise<PaginatedNotesResult> => {
   const offset = (page - 1) * limit;
 
   if (search) {
@@ -23,16 +19,16 @@ export const findAllNotes = async ({
 
     const result = await pool.query<Note>(
       `SELECT * FROM notes
-     WHERE title ILIKE $1 OR content ILIKE $1
+     WHERE user_id = $1 AND (title ILIKE $2 OR content ILIKE $2)
      ORDER BY ${sortBy} ${order}
-     LIMIT $2 OFFSET $3`,
-      [searchPattern, limit, offset],
+     LIMIT $3 OFFSET $4`,
+      [userId, searchPattern, limit, offset],
     );
 
     const countResult = await pool.query<CountResult>(
       `SELECT COUNT(*) FROM notes
-     WHERE title ILIKE $1 OR content ILIKE $1`,
-      [searchPattern],
+     WHERE user_id = $1 AND (title ILIKE $2 OR content ILIKE $2)`,
+      [userId, searchPattern],
     );
 
     return {
@@ -43,13 +39,15 @@ export const findAllNotes = async ({
 
   const result = await pool.query<Note>(
     `SELECT * FROM notes
+   WHERE user_id = $1
    ORDER BY ${sortBy} ${order}
-   LIMIT $1 OFFSET $2`,
-    [limit, offset],
+   LIMIT $2 OFFSET $3`,
+    [userId, limit, offset],
   );
 
   const countResult = await pool.query<CountResult>(
-    "SELECT COUNT(*) FROM notes",
+    "SELECT COUNT(*) FROM notes WHERE user_id=$1",
+    [userId],
   );
 
   return {
@@ -58,10 +56,14 @@ export const findAllNotes = async ({
   };
 };
 
-export const findNoteById = async (id: number): Promise<Note | null> => {
-  const result = await pool.query<Note>("SELECT * FROM notes WHERE id=$1", [
-    id,
-  ]);
+export const findNoteById = async (
+  id: number,
+  userId: number,
+): Promise<Note | null> => {
+  const result = await pool.query<Note>(
+    "SELECT * FROM notes WHERE id=$1 AND user_id=$2",
+    [id, userId],
+  );
   return result.rows[0] ?? null;
 };
 

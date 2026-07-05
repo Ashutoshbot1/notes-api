@@ -12,12 +12,13 @@ import type {
 } from "../types/note.types.js";
 import type { PaginatedResponse } from "../types/pagination.types.js";
 
+const DEFAULT_USER_ID = 1;
+
 export const findNoteById = async (id: number): Promise<Note | null> => {
-  const result = await findNoteByIdFromRepository(id);
+  const result = await findNoteByIdFromRepository(id, DEFAULT_USER_ID);
   return result;
 };
 
-const DEFAULT_USER_ID = 1;
 export const createNewNote = async (
   title: string,
   content: string,
@@ -37,13 +38,16 @@ export const getAllNotes = async ({
   order,
   search,
 }: GetNotesQuery): Promise<PaginatedResponse<Note>> => {
-  const { items, totalItems }: PaginatedNotesResult = await findAllNotes({
-    page,
-    limit,
-    sortBy,
-    order,
-    search,
-  });
+  const { items, totalItems }: PaginatedNotesResult = await findAllNotes(
+    {
+      page,
+      limit,
+      sortBy,
+      order,
+      search,
+    },
+    DEFAULT_USER_ID,
+  );
   const totalPages = Math.ceil(totalItems / limit);
   const hasNextPage = page < totalPages;
   const hasPreviousPage = page > 1;
