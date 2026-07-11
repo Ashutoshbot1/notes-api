@@ -4,14 +4,15 @@ import {
   findUserByEmail,
 } from "../repositories/user.repository.js";
 import type {
-  AuthUserResponse,
+  AuthResponse,
   CreateUserData,
   LoginBody,
   SignupBody,
 } from "../types/auth.types.js";
 import { BadRequestError } from "../errors/bad-request.error.js";
+import { generateAccessToken } from "../utils/auth.utils.js";
 
-export const signup = async (data: SignupBody): Promise<AuthUserResponse> => {
+export const signup = async (data: SignupBody): Promise<AuthResponse> => {
   const { name, email, password } = data;
   const isUserExists = await findUserByEmail(email);
   const saltRounds = Number(process.env.SALT) || 10;
@@ -30,16 +31,27 @@ export const signup = async (data: SignupBody): Promise<AuthUserResponse> => {
 
   const user = await createUser(signupData);
 
-  return {
-    id: user.id,
-    name: user.name,
+  const tokenPayload = {
+    userId: user.id,
     email: user.email,
-    created_at: user.created_at,
-    updated_at: user.updated_at,
   };
+  const accessToken = generateAccessToken(tokenPayload);
+
+  const authResponse = {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    },
+    accessToken,
+  };
+
+  return authResponse;
 };
 
-export const login = async (data: LoginBody): Promise<AuthUserResponse> => {
+export const login = async (data: LoginBody): Promise<AuthResponse> => {
   const user = await findUserByEmail(data.email);
 
   if (!user) {
@@ -59,11 +71,23 @@ export const login = async (data: LoginBody): Promise<AuthUserResponse> => {
     throw new BadRequestError("Invalid credentials");
   }
 
-  return {
-    id: user.id,
-    name: user.name,
+  const tokenPayload = {
+    userId: user.id,
     email: user.email,
-    created_at: user.created_at,
-    updated_at: user.updated_at,
   };
+
+  const accessToken = generateAccessToken(tokenPayload);
+
+  const authResponse = {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    },
+    accessToken,
+  };
+
+  return authResponse;
 };
