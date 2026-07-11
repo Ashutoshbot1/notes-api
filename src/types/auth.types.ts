@@ -18,3 +18,11 @@ export interface CreateUserData {
   email: string;
   password_hash: string;
 }
+
+export interface AuthUserResponse {
+  id: number;
+  name: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}

@@ -3,16 +3,20 @@ import {
   createUser,
   findUserByEmail,
 } from "../repositories/user.repository.js";
-import type { CreateUserData, SignupBody, User } from "../types/auth.types.js";
+import type {
+  AuthUserResponse,
+  CreateUserData,
+  SignupBody,
+} from "../types/auth.types.js";
 import { BadRequestError } from "../errors/bad-request.error.js";
 
-export const signup = async (data: SignupBody): Promise<User> => {
+export const signup = async (data: SignupBody): Promise<AuthUserResponse> => {
   const { name, email, password } = data;
   const isUserExists = await findUserByEmail(email);
   const saltRounds = Number(process.env.SALT) || 10;
 
   if (isUserExists) {
-    throw new BadRequestError("Email already Exists");
+    throw new BadRequestError("Email already exists");
   }
 
   const password_hash = await bcrypt.hash(password, saltRounds);
@@ -25,5 +29,11 @@ export const signup = async (data: SignupBody): Promise<User> => {
 
   const user = await createUser(signupData);
 
-  return user;
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+  };
 };
