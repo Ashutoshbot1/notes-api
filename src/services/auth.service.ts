@@ -8,9 +8,31 @@ import type {
   CreateUserData,
   LoginBody,
   SignupBody,
+  User,
 } from "../types/auth.types.js";
 import { BadRequestError } from "../errors/bad-request.error.js";
 import { generateAccessToken } from "../utils/auth.utils.js";
+
+const buildAuthResponse = (user: User): AuthResponse => {
+  const tokenPayload = {
+    userId: user.id,
+    email: user.email,
+  };
+
+  const accessToken = generateAccessToken(tokenPayload);
+  const authResponse = {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    },
+    accessToken,
+  };
+
+  return authResponse;
+};
 
 export const signup = async (data: SignupBody): Promise<AuthResponse> => {
   const { name, email, password } = data;
@@ -31,24 +53,7 @@ export const signup = async (data: SignupBody): Promise<AuthResponse> => {
 
   const user = await createUser(signupData);
 
-  const tokenPayload = {
-    userId: user.id,
-    email: user.email,
-  };
-  const accessToken = generateAccessToken(tokenPayload);
-
-  const authResponse = {
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    },
-    accessToken,
-  };
-
-  return authResponse;
+  return buildAuthResponse(user);
 };
 
 export const login = async (data: LoginBody): Promise<AuthResponse> => {
@@ -71,23 +76,5 @@ export const login = async (data: LoginBody): Promise<AuthResponse> => {
     throw new BadRequestError("Invalid credentials");
   }
 
-  const tokenPayload = {
-    userId: user.id,
-    email: user.email,
-  };
-
-  const accessToken = generateAccessToken(tokenPayload);
-
-  const authResponse = {
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    },
-    accessToken,
-  };
-
-  return authResponse;
+  return buildAuthResponse(user);
 };
