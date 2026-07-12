@@ -36,3 +36,8 @@ export interface AuthResponse {
   user: AuthUserResponse;
   accessToken: string;
 }
+
+export interface AccessTokenPayload {
+  userId: number;
+  email: string;
+}
