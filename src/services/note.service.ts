@@ -12,32 +12,31 @@ import type {
 } from "../types/note.types.js";
 import type { PaginatedResponse } from "../types/pagination.types.js";
 
-const DEFAULT_USER_ID = 1;
-
-export const findNoteById = async (id: number): Promise<Note | null> => {
-  const result = await findNoteByIdFromRepository(id, DEFAULT_USER_ID);
+export const findNoteById = async (
+  id: number,
+  userId: number,
+): Promise<Note | null> => {
+  const result = await findNoteByIdFromRepository(id, userId);
   return result;
 };
 
 export const createNewNote = async (
   title: string,
   content: string,
+  userId: number,
 ): Promise<Note> => {
   const result = await createNoteInRepository({
     title,
     content,
-    userId: DEFAULT_USER_ID,
+    userId,
   });
   return result;
 };
 
-export const getAllNotes = async ({
-  page,
-  limit,
-  sortBy,
-  order,
-  search,
-}: GetNotesQuery): Promise<PaginatedResponse<Note>> => {
+export const getAllNotes = async (
+  { page, limit, sortBy, order, search }: GetNotesQuery,
+  userId: number,
+): Promise<PaginatedResponse<Note>> => {
   const { items, totalItems }: PaginatedNotesResult = await findAllNotes(
     {
       page,
@@ -46,7 +45,7 @@ export const getAllNotes = async ({
       order,
       search,
     },
-    DEFAULT_USER_ID,
+    userId,
   );
   const totalPages = Math.ceil(totalItems / limit);
   const hasNextPage = page < totalPages;
@@ -68,14 +67,18 @@ export const getAllNotes = async ({
 
 export const updatedNote = async (
   id: number,
+  userId: number,
   title?: string,
   content?: string,
 ): Promise<Note | null> => {
-  const result = await updateNoteById(id, { title, content }, DEFAULT_USER_ID);
+  const result = await updateNoteById(id, { title, content }, userId);
   return result;
 };
 
-export const deleteNote = async (id: number): Promise<Note | null> => {
-  const result = await deleteNoteById(id, DEFAULT_USER_ID);
+export const deleteNote = async (
+  id: number,
+  userId: number,
+): Promise<Note | null> => {
+  const result = await deleteNoteById(id, userId);
   return result;
 };

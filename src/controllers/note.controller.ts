@@ -19,8 +19,9 @@ export const createNote = async (
   res: Response,
 ): Promise<void> => {
   const { title, content } = req.body;
+  const userId = res.locals.authUser.userId;
 
-  const newNote = await createNewNote(title, content);
+  const newNote = await createNewNote(title, content, userId);
   sendSuccessResponse(res, 201, "Note created successfully", newNote);
 };
 
@@ -29,7 +30,8 @@ export const getAllNotes = async (
   res: Response,
 ): Promise<void> => {
   const query = res.locals.validatedQuery as GetNotesQuery;
-  const notes = await getAllNotesService(query);
+  const userId = res.locals.authUser.userId;
+  const notes = await getAllNotesService(query, userId);
   sendSuccessResponse(res, 200, "Notes fetched successfully", notes);
 };
 
@@ -38,8 +40,9 @@ export const getNoteById = async (
   res: Response,
 ): Promise<void> => {
   const id = Number(req.params.id);
+  const userId = res.locals.authUser.userId;
 
-  const note = await findNoteById(id);
+  const note = await findNoteById(id, userId);
 
   if (!note) {
     throw new NotFoundError("Note not found");
@@ -54,8 +57,9 @@ export const updateNoteById = async (
 ): Promise<void> => {
   const id = Number(req.params.id);
   const { title, content } = req.body;
+  const userId = res.locals.authUser.userId;
 
-  const note = await updatedNote(id, title, content);
+  const note = await updatedNote(id, userId, title, content);
 
   if (!note) {
     throw new NotFoundError("Note not found");
@@ -69,8 +73,9 @@ export const deleteNoteById = async (
   res: Response,
 ): Promise<void> => {
   const id = Number(req.params.id);
+  const userId = res.locals.authUser.userId;
 
-  const note = await deleteNote(id);
+  const note = await deleteNote(id, userId);
   if (!note) {
     throw new NotFoundError("Note not found");
   }
