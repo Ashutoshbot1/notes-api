@@ -1,5 +1,4 @@
 import type { RequestHandler } from "express";
-import { BadRequestError } from "../errors/bad-request.error.js";
 import jwt from "jsonwebtoken";
 import type { AccessTokenPayload } from "../types/auth.types.js";
 import { UnauthorizedError } from "../errors/unauthorized.error.js";
@@ -30,7 +29,7 @@ export const authenticate: RequestHandler = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, secret) as AccessTokenPayload;
 
-    res.locals.authUser = decoded;
+    req.user = decoded;
 
     next();
   } catch {
