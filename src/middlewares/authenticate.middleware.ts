@@ -8,17 +8,17 @@ export const authenticate: RequestHandler = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    throw new BadRequestError("Authentication token missing");
+    throw new UnauthorizedError("Authentication token missing");
   }
 
   if (!authHeader.startsWith("Bearer ")) {
-    throw new BadRequestError("Authentication token missing");
+    throw new UnauthorizedError("Authentication token missing");
   }
 
   const token = authHeader.split(" ")[1];
 
   if (!token) {
-    throw new BadRequestError("Authentication token missing");
+    throw new UnauthorizedError("Authentication token missing");
   }
 
   const secret = process.env.JWT_SECRET;
