@@ -13,25 +13,37 @@ import {
   noteIdSchema,
   updateNoteSchema,
 } from "../schemas/note.schema.js";
+import { authenticate } from "../middlewares/authenticate.middleware.js";
 
 const router = Router();
 
 // GET
-router.get("/", validateWithZod(getNotesQuerySchema), getAllNotes);
-router.get("/:id", validateWithZod(noteIdSchema), getNoteById);
+router.get(
+  "/",
+  authenticate,
+  validateWithZod(getNotesQuerySchema),
+  getAllNotes,
+);
+router.get("/:id", authenticate, validateWithZod(noteIdSchema), getNoteById);
 
 // POST
-router.post("/", validateWithZod(createNoteSchema), createNote);
+router.post("/", authenticate, validateWithZod(createNoteSchema), createNote);
 
 // PUT
 router.patch(
   "/:id",
+  authenticate,
   validateWithZod(noteIdSchema),
   validateWithZod(updateNoteSchema),
   updateNoteById,
 );
 
 // DELETE
-router.delete("/:id", validateWithZod(noteIdSchema), deleteNoteById);
+router.delete(
+  "/:id",
+  authenticate,
+  validateWithZod(noteIdSchema),
+  deleteNoteById,
+);
 
 export default router;
