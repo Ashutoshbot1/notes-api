@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import type { SignOptions } from "jsonwebtoken";
 import type { AccessTokenPayload } from "../types/auth.types.js";
+import crypto from "crypto";
 
 export const generateAccessToken = (payload: AccessTokenPayload): string => {
   const secret = process.env.JWT_SECRET;
@@ -15,4 +16,8 @@ export const generateAccessToken = (payload: AccessTokenPayload): string => {
   };
 
   return jwt.sign(payload, secret, options);
+};
+
+export const generateRefreshToken = (): string => {
+  return crypto.randomBytes(64).toString("hex");
 };

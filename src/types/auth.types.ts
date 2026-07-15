@@ -35,6 +35,7 @@ export interface LoginBody {
 export interface AuthResponse {
   user: AuthUserResponse;
   accessToken: string;
+  refreshToken: string;
 }
 
 export interface AccessTokenPayload {
