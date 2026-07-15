@@ -42,3 +42,9 @@ export interface AccessTokenPayload {
   userId: number;
   email: string;
 }
+
+export interface CreateRefreshTokenData {
+  userId: number;
+  tokenHash: string;
+  expiresAt: Date;
+}

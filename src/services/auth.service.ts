@@ -11,7 +11,10 @@ import type {
   User,
 } from "../types/auth.types.js";
 import { BadRequestError } from "../errors/bad-request.error.js";
-import { generateAccessToken } from "../utils/auth.utils.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../utils/auth.utils.js";
 
 const buildAuthResponse = (user: User): AuthResponse => {
   const tokenPayload = {
@@ -20,6 +23,7 @@ const buildAuthResponse = (user: User): AuthResponse => {
   };
 
   const accessToken = generateAccessToken(tokenPayload);
+  const refreshToken = generateRefreshToken();
   const authResponse = {
     user: {
       id: user.id,
@@ -29,6 +33,7 @@ const buildAuthResponse = (user: User): AuthResponse => {
       updated_at: user.updated_at,
     },
     accessToken,
+    refreshToken,
   };
 
   return authResponse;
