@@ -1,7 +1,7 @@
 import { pool } from "../config/db.js";
 import type { CreateRefreshTokenData } from "../types/auth.types.js";
 
-export const CreateRefreshToken = async (
+export const createRefreshToken = async (
   data: CreateRefreshTokenData,
 ): Promise<void> => {
   await pool.query(

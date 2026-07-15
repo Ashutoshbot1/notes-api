@@ -15,15 +15,29 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/auth.utils.js";
+import { createRefreshToken } from "../repositories/refresh-token.repository.js";
 
-const buildAuthResponse = (user: User): AuthResponse => {
+const buildAuthResponse = async (user: User): Promise<AuthResponse> => {
   const tokenPayload = {
     userId: user.id,
     email: user.email,
   };
 
   const accessToken = generateAccessToken(tokenPayload);
+
   const refreshToken = generateRefreshToken();
+  const saltRounds = Number(process.env.SALT) || 10;
+  const refreshTokenHash = await bcrypt.hash(refreshToken, saltRounds);
+
+  const refreshTokenExpiresAt = new Date();
+  refreshTokenExpiresAt.setDate(refreshTokenExpiresAt.getDate() + 7);
+
+  await createRefreshToken({
+    userId: user.id,
+    tokenHash: refreshTokenHash,
+    expiresAt: refreshTokenExpiresAt,
+  });
+
   const authResponse = {
     user: {
       id: user.id,
@@ -58,7 +72,7 @@ export const signup = async (data: SignupBody): Promise<AuthResponse> => {
 
   const user = await createUser(signupData);
 
-  return buildAuthResponse(user);
+  return await buildAuthResponse(user);
 };
 
 export const login = async (data: LoginBody): Promise<AuthResponse> => {
@@ -81,5 +95,5 @@ export const login = async (data: LoginBody): Promise<AuthResponse> => {
     throw new BadRequestError("Invalid credentials");
   }
 
-  return buildAuthResponse(user);
+  return await buildAuthResponse(user);
 };
