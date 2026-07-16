@@ -68,6 +68,23 @@ const buildAuthResponse = async (user: User): Promise<AuthResponse> => {
   return authResponse;
 };
 
+const findMatchingActiveRefreshToken = async (refreshToken: string) => {
+  const activeRefreshTokens = await findActiveRefreshTokens();
+
+  for (const tokenRecord of activeRefreshTokens) {
+    const isRefreshTokenValid = await bcrypt.compare(
+      refreshToken,
+      tokenRecord.token_hash,
+    );
+
+    if (isRefreshTokenValid) {
+      return tokenRecord;
+    }
+  }
+
+  throw new BadRequestError("Invalid refresh token");
+};
+
 export const signup = async (data: SignupBody): Promise<AuthResponse> => {
   const { name, email, password } = data;
   const isUserExists = await findUserByEmail(email);
@@ -116,27 +133,22 @@ export const login = async (data: LoginBody): Promise<AuthResponse> => {
 export const refreshAccessToken = async (
   data: RefreshTokenBody,
 ): Promise<RefreshAccessTokenResponse> => {
-  const activeRefreshTokens = await findActiveRefreshTokens();
+  const tokenRecord = await findMatchingActiveRefreshToken(data.refreshToken);
 
-  for (const tokenRecord of activeRefreshTokens) {
-    const isRefreshTokenValid = await bcrypt.compare(
-      data.refreshToken,
-      tokenRecord.token_hash,
-    );
+  await revokeRefreshToken(tokenRecord.id);
 
-    if (isRefreshTokenValid) {
-      await revokeRefreshToken(tokenRecord.id);
+  const { accessToken, refreshToken } = await createTokenPair(
+    tokenRecord.user_id,
+  );
 
-      const { accessToken, refreshToken } = await createTokenPair(
-        tokenRecord.user_id,
-      );
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
 
-      return {
-        accessToken,
-        refreshToken,
-      };
-    }
-  }
+export const logout = async (data: RefreshTokenBody): Promise<void> => {
+  const tokenRecord = await findMatchingActiveRefreshToken(data.refreshToken);
 
-  throw new BadRequestError("Invalid refresh token");
+  await revokeRefreshToken(tokenRecord.id);
 };

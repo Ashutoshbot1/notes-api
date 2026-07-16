@@ -7,6 +7,7 @@ import {
 } from "../schemas/auth.schema.js";
 import {
   loginController,
+  logoutController,
   refreshTokenController,
   signupController,
 } from "../controllers/auth.controller.js";
@@ -19,5 +20,6 @@ router.post(
   validateWithZod(refreshTokenSchema),
   refreshTokenController,
 );
+router.post("/logout", validateWithZod(refreshTokenSchema), logoutController);
 
 export default router;

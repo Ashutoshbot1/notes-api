@@ -1,5 +1,6 @@
 import {
   login,
+  logout,
   refreshAccessToken,
   signup,
 } from "../services/auth.service.js";
@@ -36,4 +37,13 @@ export const refreshTokenController = async (
   const data = req.body;
   const tokens = await refreshAccessToken(data);
   sendSuccessResponse(res, 200, "Token refreshed successfully", tokens);
+};
+
+export const logoutController = async (
+  req: Request<any, any, RefreshTokenBody>,
+  res: Response,
+): Promise<void> => {
+  const data = req.body;
+  await logout(data);
+  sendSuccessResponse(res, 200, "Logged out successfully", null);
 };
