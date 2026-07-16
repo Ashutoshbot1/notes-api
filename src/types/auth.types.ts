@@ -40,7 +40,6 @@ export interface AuthResponse {
 
 export interface AccessTokenPayload {
   userId: number;
-  email: string;
 }
 
 export interface CreateRefreshTokenData {
@@ -55,6 +54,7 @@ export interface RefreshTokenBody {
 
 export interface RefreshAccessTokenResponse {
   accessToken: string;
+  refreshToken: string;
 }
 
 export interface RefreshTokenRecord {

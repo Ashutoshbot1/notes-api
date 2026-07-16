@@ -1,5 +1,13 @@
-import { login, signup } from "../services/auth.service.js";
-import type { LoginBody, SignupBody } from "../types/auth.types.js";
+import {
+  login,
+  refreshAccessToken,
+  signup,
+} from "../services/auth.service.js";
+import type {
+  LoginBody,
+  RefreshTokenBody,
+  SignupBody,
+} from "../types/auth.types.js";
 import type { Request, Response } from "express";
 import { sendSuccessResponse } from "../utils/response.js";
 
@@ -19,4 +27,13 @@ export const loginController = async (
   const data = req.body;
   const user = await login(data);
   sendSuccessResponse(res, 200, "Logged in successfully", user);
+};
+
+export const refreshTokenController = async (
+  req: Request<any, any, RefreshTokenBody>,
+  res: Response,
+): Promise<void> => {
+  const data = req.body;
+  const tokens = await refreshAccessToken(data);
+  sendSuccessResponse(res, 200, "Token refreshed successfully", tokens);
 };

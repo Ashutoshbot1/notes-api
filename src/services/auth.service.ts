@@ -7,6 +7,8 @@ import type {
   AuthResponse,
   CreateUserData,
   LoginBody,
+  RefreshAccessTokenResponse,
+  RefreshTokenBody,
   SignupBody,
   User,
 } from "../types/auth.types.js";
@@ -15,15 +17,19 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/auth.utils.js";
-import { createRefreshToken } from "../repositories/refresh-token.repository.js";
+import {
+  createRefreshToken,
+  findActiveRefreshTokens,
+  revokeRefreshToken,
+} from "../repositories/refresh-token.repository.js";
 
-const buildAuthResponse = async (user: User): Promise<AuthResponse> => {
-  const tokenPayload = {
-    userId: user.id,
-    email: user.email,
-  };
-
-  const accessToken = generateAccessToken(tokenPayload);
+const createTokenPair = async (
+  userId: number,
+): Promise<{
+  accessToken: string;
+  refreshToken: string;
+}> => {
+  const accessToken = generateAccessToken({ userId });
 
   const refreshToken = generateRefreshToken();
   const saltRounds = Number(process.env.SALT) || 10;
@@ -33,10 +39,19 @@ const buildAuthResponse = async (user: User): Promise<AuthResponse> => {
   refreshTokenExpiresAt.setDate(refreshTokenExpiresAt.getDate() + 7);
 
   await createRefreshToken({
-    userId: user.id,
+    userId,
     tokenHash: refreshTokenHash,
     expiresAt: refreshTokenExpiresAt,
   });
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
+
+const buildAuthResponse = async (user: User): Promise<AuthResponse> => {
+  const { accessToken, refreshToken } = await createTokenPair(user.id);
 
   const authResponse = {
     user: {
@@ -96,4 +111,32 @@ export const login = async (data: LoginBody): Promise<AuthResponse> => {
   }
 
   return await buildAuthResponse(user);
+};
+
+export const refreshAccessToken = async (
+  data: RefreshTokenBody,
+): Promise<RefreshAccessTokenResponse> => {
+  const activeRefreshTokens = await findActiveRefreshTokens();
+
+  for (const tokenRecord of activeRefreshTokens) {
+    const isRefreshTokenValid = await bcrypt.compare(
+      data.refreshToken,
+      tokenRecord.token_hash,
+    );
+
+    if (isRefreshTokenValid) {
+      await revokeRefreshToken(tokenRecord.id);
+
+      const { accessToken, refreshToken } = await createTokenPair(
+        tokenRecord.user_id,
+      );
+
+      return {
+        accessToken,
+        refreshToken,
+      };
+    }
+  }
+
+  throw new BadRequestError("Invalid refresh token");
 };
