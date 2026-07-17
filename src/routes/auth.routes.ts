@@ -11,10 +11,21 @@ import {
   refreshTokenController,
   signupController,
 } from "../controllers/auth.controller.js";
+import { authRateLimiter } from "../middlewares/rate-limit.middleware.js";
 
 const router = Router();
-router.post("/login", validateWithZod(loginSchema), loginController);
-router.post("/signup", validateWithZod(signupSchema), signupController);
+router.post(
+  "/login",
+  authRateLimiter,
+  validateWithZod(loginSchema),
+  loginController,
+);
+router.post(
+  "/signup",
+  authRateLimiter,
+  validateWithZod(signupSchema),
+  signupController,
+);
 router.post(
   "/refresh",
   validateWithZod(refreshTokenSchema),

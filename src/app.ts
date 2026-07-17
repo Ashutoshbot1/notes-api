@@ -3,11 +3,13 @@ import healthRouter from "./routes/health.routes.js";
 import noteRouter from "./routes/note.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import { generalRateLimiter } from "./middlewares/rate-limit.middleware.js";
 
 const app = express();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(generalRateLimiter);
 
 app.use("/health", healthRouter);
 app.use("/notes", noteRouter);
